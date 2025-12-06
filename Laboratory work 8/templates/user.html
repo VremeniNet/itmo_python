@@ -56,9 +56,75 @@
         {% endif %}
     </section>
 
+    {% if subscriptions %}
+    <section class="card">
+        <h2>Динамика курсов за последние 3 месяца</h2>
+        <p class="meta">
+            Для каждой валюты, на которую оформлена подписка, показывается линия с изменением курса.
+        </p>
+        <div class="chart-container">
+            <canvas id="ratesChart"></canvas>
+        </div>
+    </section>
+    {% endif %}
+
     <footer class="site-footer">
         © {{ app.author.name }}, группа {{ app.author.group }}
     </footer>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Данные истории курсов от сервера (словарь: код валюты -> список точек {date, value})
+    const historyData = {{ history_json|safe }};
+
+    if (Object.keys(historyData).length > 0) {
+        const ctx = document.getElementById('ratesChart').getContext('2d');
+
+        // Берём даты по первой валюте — у всех одинаковый набор
+        const firstCode = Object.keys(historyData)[0];
+        const labels = historyData[firstCode].map(point => point.date);
+
+        const datasets = Object.keys(historyData).map((code, index) => {
+            return {
+                label: code,
+                data: historyData[code].map(point => point.value),
+                borderWidth: 2,
+                tension: 0.2,
+                fill: false,
+            };
+        });
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Дата'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Курс, ₽'
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>
