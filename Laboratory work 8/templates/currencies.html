@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ app.name }} — курсы валют</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+<header class="site-header">
+    <h1 class="site-title">Курсы валют</h1>
+    <p class="site-subtitle">
+        Текущие курсы валют, полученные через функцию <code>get_currencies</code>.
+    </p>
+</header>
+
+<nav class="site-nav">
+    <a href="/">Главная</a>
+    <a href="/users">Пользователи</a>
+    <a href="/currencies">Валюты</a>
+    <a href="/author">Об авторе</a>
+</nav>
+
+<main class="page">
+    <section class="card">
+        <h2>Список валют</h2>
+
+        {% if rates_date %}
+            <p class="meta">
+                <strong>Данные на:</strong> {{ rates_date }}
+            </p>
+        {% endif %}
+
+        {% if currencies %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Код</th>
+                    <th>Название</th>
+                    <th>Номинал</th>
+                    <th>Курс, ₽</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cur in currencies %}
+                    <tr>
+                        <td>{{ cur.id }}</td>
+                        <td>
+                            {{ cur.char_code }}
+                            <span class="muted">({{ cur.num_code }})</span>
+                        </td>
+                        <td>{{ cur.name }}</td>
+                        <td>{{ cur.nominal }}</td>
+                        <td>{{ "%.4f"|format(cur.value) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Данные о валютах недоступны.</p>
+        {% endif %}
+    </section>
+
+    <footer class="site-footer">
+        © {{ app.author.name }}, группа {{ app.author.group }}
+    </footer>
+</main>
+</body>
+</html>
