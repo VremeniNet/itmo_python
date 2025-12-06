@@ -12,7 +12,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 from typing import Dict, List
-
+import json
+from datetime import date, timedelta
+import random
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -73,6 +75,23 @@ def update_currency_rates() -> None:
         if cur.char_code in rates:
             cur.value = rates[cur.char_code]
 
+def build_fake_history_for_currency(cur: Currency, points: int = 12) -> list[dict]:
+    """
+    Генерирует псевдо-историю курса валюты на ~3 месяца назад.
+    Используется для демонстрации графика: точки раз в неделю.
+    """
+    random.seed(cur.id)
+    today = date.today()
+    step = timedelta(days=7)
+    base = float(cur.value) if cur.value > 0 else 100.0
+
+    history: list[dict] = []
+    for i in range(points):
+        d = today - step * (points - 1 - i)
+        factor = 1 + (random.random() - 0.5) * 0.10
+        value = round(base * factor, 4)
+        history.append({"date": d.isoformat(), "value": value})
+    return history
 
 
 class MyRequestHandler(BaseHTTPRequestHandler):
@@ -145,6 +164,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self._render("users.html", context)
 
     def handle_user(self, parsed) -> None:
+        """Маршрут /user?id=... — один пользователь и его подписки + график."""
         query = parse_qs(parsed.query)
         raw_id = query.get("id", [None])[0]
 
@@ -160,10 +180,18 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
         subs = [rel for rel in user_currency_relations if rel.user.id == user_obj.id]
 
+        update_currency_rates()
+
+        history_by_code: dict[str, list[dict]] = {}
+        for rel in subs:
+            code = rel.currency.char_code
+            history_by_code[code] = build_fake_history_for_currency(rel.currency)
+
         context = {
             "app": app_info,
             "user": user_obj,
             "subscriptions": subs,
+            "history_json": json.dumps(history_by_code, ensure_ascii=False),
         }
         self._render("user.html", context)
 
