@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ app.name }} — пользователи</title>
+    <!-- статика по маршруту /static/... -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="site-header">
+    <h1 class="site-title">Пользователи</h1>
+    <p class="site-subtitle">
+        Список пользователей и их подписок на валюты.
+        Данные получаются через контроллер пользовательских подписок.
+    </p>
+</header>
+
+<nav class="site-nav">
+    <a href="/">Главная</a>
+    <a href="/users">Пользователи</a>
+    <a href="/currencies">Валюты</a>
+    <a href="/author">Об авторе</a>
+</nav>
+
+<main class="page">
+    <section class="card">
+        <h2>Список пользователей</h2>
+
+        {% if users %}
+            <p class="muted">
+                Для просмотра подробной информации по конкретному пользователю
+                используется маршрут <code>/user?id=&lt;id&gt;</code>, который
+                обрабатывается контроллером и рендерит шаблон <code>user.html</code>.
+            </p>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя</th>
+                    <th>Подписок на валюты</th>
+                    <th>Подписанные валюты</th>
+                    <th>Профиль</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    {% set subs = user_subscriptions.get(user.id, []) %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ subs|length }}</td>
+                        <td>
+                            {% if subs %}
+                                {% for rel in subs %}
+                                    {{ rel.currency.char_code }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                нет подписок
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/user?id={{ user.id }}" class="btn-link">
+                                Открыть
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Пользователи не найдены.</p>
+        {% endif %}
+    </section>
+
+    <footer class="site-footer">
+        © {{ app.author.name }}, группа {{ app.author.group }}
+    </footer>
+</main>
+</body>
+</html>

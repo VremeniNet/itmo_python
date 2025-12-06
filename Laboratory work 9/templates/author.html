@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ app.name }} — об авторе</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="site-header">
+    <h1 class="site-title">Об авторе</h1>
+    <p class="site-subtitle">
+        Информация об авторе приложения и лабораторной работы.
+    </p>
+</header>
+
+<nav class="site-nav">
+    <a href="/">Главная</a>
+    <a href="/users">Пользователи</a>
+    <a href="/currencies">Валюты</a>
+    <a href="/author">Об авторе</a>
+</nav>
+
+<main class="page">
+    <section class="card author-card">
+        <h2>{{ app.author.name }}</h2>
+        <p class="meta">
+            <span><strong>Учебная группа:</strong> {{ app.author.group }}</span>
+        </p>
+
+        <p>
+            Приложение создано в рамках лабораторной работы по курсу Python.
+            Основные задачи — реализовать архитектуру MVC, разделив модели,
+            контроллеры и представления, а также показать работу с
+            <code>HTTPServer</code>, шаблонизатором <code>Jinja2</code> и
+            базой данных SQLite.
+        </p>
+
+        <p>
+            Отдельно реализован контроллер <code>CurrencyController</code>,
+            который инкапсулирует логику CRUD-операций с таблицей валют
+            (создание, чтение, обновление и удаление записей). Результаты его
+            работы можно увидеть на странице
+            <a href="/currencies">«Валюты»</a>, где отображается список валют
+            и доступны операции обновления и удаления.
+        </p>
+
+        <p>
+            Кроме того, приложение интегрировано с внешним API курсов валют
+            через функцию <code>get_currencies</code>, а пользователи и их
+            подписки отображаются на страницах <a href="/users">/users</a> и
+            <a href="/user?id=1">/user?id=...</a>.
+        </p>
+    </section>
+
+    <footer class="site-footer">
+        © {{ app.author.name }}, группа {{ app.author.group }}
+    </footer>
+</main>
+</body>
+</html>

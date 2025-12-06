@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ app.name }} — главная</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="site-header">
+    <h1 class="site-title">{{ app.name }}</h1>
+    <p class="site-subtitle">
+        Приложение для просмотра курсов валют, подписок пользователей
+        и демонстрации CRUD-операций с сущностью Currency.
+    </p>
+</header>
+
+<nav class="site-nav">
+    <a href="/">Главная</a>
+    <a href="/users">Пользователи</a>
+    <a href="/currencies">Валюты</a>
+    <a href="/author">Об авторе</a>
+</nav>
+
+<main class="page">
+    <section class="card">
+        <h2>О приложении</h2>
+        <div class="meta">
+            <span><strong>Версия:</strong> {{ app.version }}</span>
+            <span><strong>Автор:</strong> {{ app.author.name }} ({{ app.author.group }})</span>
+        </div>
+        <p>
+            Приложение получает актуальные курсы валют через функцию
+            <code>get_currencies</code> и сохраняет выборочные значения в базе данных
+            SQLite. Работа с БД инкапсулирована в контроллере
+            <code>CurrencyController</code>, который реализует операции
+            <strong>create / read / update / delete</strong>.
+        </p>
+        <p>
+            Через веб-интерфейс можно просмотреть список пользователей и их подписки,
+            таблицу валют, а также выполнить обновление и удаление записей
+            <a href="/currencies">«Валюты»</a>).
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>Навигация</h2>
+        <ul>
+            <li><a href="/users">Список пользователей</a></li>
+            <li><a href="/currencies">Список валют, обновление и удаление</a></li>
+            <li><a href="/user?id=1">Пример страницы пользователя (id = 1)</a></li>
+            <li><a href="/author">Информация об авторе работы</a></li>
+        </ul>
+    </section>
+
+    <footer class="site-footer">
+        © {{ app.author.name }}, группа {{ app.author.group }}
+    </footer>
+</main>
+</body>
+</html>
