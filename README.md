@@ -11,5 +11,7 @@
 - [Laboratory work 6](https://github.com/VremeniNet/itmo_python/tree/main/Laboratory%20work%206)
 - [Laboratory work 7](https://github.com/VremeniNet/itmo_python/tree/main/Laboratory%20work%207)
 - [Laboratory work 8](https://github.com/VremeniNet/itmo_python/tree/main/Laboratory%20work%208)
+- [Laboratory work 8](https://github.com/VremeniNet/itmo_python/tree/main/Laboratory%20work%209)
+  
   
   
